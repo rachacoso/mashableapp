@@ -1,0 +1,56 @@
+<div class="container">
+	<div class="row">
+
+		<div class="col-sm-3">
+			<h1> Mashable </h1>
+
+
+			<div class="col-sm-12">
+				<div class="btn-group-vertical">
+					<a class="btn btn-primary btn-xs" role="button" href="/">All</a>
+					<% @channels.uniq.each do |chan| %>
+					<a class="btn btn-primary btn-xs" role="button" href="/filter?filter=<%= chan.gsub(/\&/, '%26') %>&type=channel"><%= chan %></a>
+					<% end %>
+				</div>
+			</div>
+			
+
+			<div class="col-sm-12 top-buffer">
+				<div class="btn-group-vertical">
+					<a class="btn btn-primary btn-xs" role="button" href="/">All</a>
+					<% @authors.uniq.each do |auth| %>
+					<a class="btn btn-primary btn-xs" role="button" href="/filter?filter=<%= auth %>&type=author"><%= auth %></a>
+					<% end %>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="col-sm-9">
+			<div class="row equal">
+			<% @stories.each_with_index do |story, index| %>
+			
+			<% if (index + 1)%2 != 0 %>
+				<div class="row equal">
+			<% end %>
+				<div class="col-sm-6">
+					<div class="panel panel-default">
+
+					  <div class="panel-body">
+							<h5><%= story['title'] %> <br> <small>by <%= story['author'] %></small></h5>
+							<a href="<%=story['link']%>" ><img src='<%= story['image'] %>' class="img-responsive"></a>
+							<h6><%=story['excerpt']%> </h6>
+							<h6><span class="label label-primary"><%=story['channel']%></span></h6>
+					  </div>
+					</div>
+				</div>
+			<% if (index + 1)%2 == 0 %>
+				</div><!-- .row -->
+			<% end %>
+			<% end %>
+
+		</div>
+
+	</div>
+</div>
+
