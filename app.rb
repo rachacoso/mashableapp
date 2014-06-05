@@ -40,13 +40,15 @@ end
 
 get '/' do 
 
-  if params[:set]
-		@mashset = params[:set]
-  else
-  	@mashset = 'new'
-  end
+  # if params[:set]
+		# @mashset = params[:set]
+  # else
+  # 	@mashset = 'new'
+  # end
 
-	all_stories = Storyset.new.get_set('http://mashable.com/stories.json', @mashset)
+	@mashset = params[:set] || 'new'
+	
+	all_stories = Storyset.new.get_set('http://mashable.com/stories.json?new_per_page=30&rising_per_page=30&?hot_per_page=30', @mashset)
 
 	#for filter menu
 	@channels = Filters.new.get_list('channel', all_stories)
@@ -65,7 +67,7 @@ get '/filter' do
 
 	if params[:filter] && params[:type] && params[:set]
 
-		all_stories = Storyset.new.get_set('http://mashable.com/stories.json', params[:set])
+		all_stories = Storyset.new.get_set('http://mashable.com/stories.json?new_per_page=30&rising_per_page=30&?hot_per_page=30', params[:set])
 
 		#for filter menu
 		if params[:type] == 'channel'
@@ -93,24 +95,14 @@ end
 get '/tweets' do
 
 	if params[:filter] && params[:type] && params[:set]
-		all_stories = Storyset.new.get_set('http://mashable.com/stories.json', params[:set])
+		all_stories = Storyset.new.get_set('http://mashable.com/stories.json?new_per_page=30&rising_per_page=30&?hot_per_page=30', params[:set])
 
 		#create timestamp
 		time = Time.new
 
 		# Format time
 		
-		@displaytime = "#{time.hour.to_s}:#{time.min.to_s} on #{time.month.to_s}/#{time.day.to_s}/#{time.year.to_s} "
-		puts time.year    # => Year of the date 
-		puts time.month   # => Month of the date (1 to 12)
-		puts time.day     # => Day of the date (1 to 31 )
-		puts time.wday    # => 0: Day of week: 0 is Sunday
-		puts time.yday    # => 365: Day of year
-		puts time.hour    # => 23: 24-hour clock
-		puts time.min     # => 59
-		puts time.sec     # => 59
-		puts time.usec    # => 999999: microseconds
-		puts time.zone    # => "UTC": timezone name
+		@displaytime = "#{time.hour}:#{time.min} on #{time.month}/#{time.day}/#{time.year} "
 
 		@client = twitter_get
 
