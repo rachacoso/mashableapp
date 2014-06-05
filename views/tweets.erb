@@ -16,7 +16,7 @@
 	  </div>
 	  <div class="panel-body">
 	  	
-				<h4> 5 most recent tweets </h4>
+				<h4> 5 most recent tweets <small>( as of <%= @displaytime %> )</small></h4>
 				<%  @client.search(story['title'], :result_type => "recent").take(5).each do |tweet| %>
 					<h5><%= tweet.text %><br>
 					<small><a href="http://twitter.com/<%= tweet.user.screen_name %>">@<%= tweet.user.screen_name %></a></small></h5>

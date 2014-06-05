@@ -33,6 +33,7 @@ class Filters
 		set.each do |story|
 			list << story[type]
 		end
+		puts list
 		return list.sort
 	end
 end
@@ -94,10 +95,29 @@ get '/tweets' do
 	if params[:filter] && params[:type] && params[:set]
 		all_stories = Storyset.new.get_set('http://mashable.com/stories.json', params[:set])
 
+		#create timestamp
+		time = Time.new
+
+		# Format time
+		
+		@displaytime = "#{time.hour.to_s}:#{time.min.to_s} on #{time.month.to_s}/#{time.day.to_s}/#{time.year.to_s} "
+		puts time.year    # => Year of the date 
+		puts time.month   # => Month of the date (1 to 12)
+		puts time.day     # => Day of the date (1 to 31 )
+		puts time.wday    # => 0: Day of week: 0 is Sunday
+		puts time.yday    # => 365: Day of year
+		puts time.hour    # => 23: 24-hour clock
+		puts time.min     # => 59
+		puts time.sec     # => 59
+		puts time.usec    # => 999999: microseconds
+		puts time.zone    # => "UTC": timezone name
+
 		@client = twitter_get
 
 		@stories = all_stories.select { |v| v[params[:type]] == params[:filter] }
 		@mashset = params[:set]
+
+
 
 	else
 		redirect '/'
