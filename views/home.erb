@@ -29,20 +29,17 @@
 
 				<% if @channels %>
 				<div class="list-group">
-				  <a href="#" class="list-group-item mashfilter">
+				  
 						<% if @channels && @authors %>
-							<strong>Filter by Channel:</strong>
+							<a href="#" class="list-group-item mashfilter"><strong>Filter by Channel:</strong></a>
 						<% else %>
-							<strong>Filtering by Channel:</strong>
+							<a href="/?set=<%= @mashset %>" class="list-group-item mashfilter"><strong>[Filtering by Channel] <span class="text-danger pull-right">remove filter</span></strong></a>
 						<% end %>
-				  </a>
+				  
 					<% @channels.uniq.each do |chan| %>
 					
 							<a class="list-group-item list-group-item-info mashfilter <%= chan == @filter ? "active" : "" %>" href="/filter?filter=<%= chan.gsub(/\&/, '%26') %>&type=channel&set=<%= @mashset %>"><%= chan %><span class="badge"><%= @channels.count(chan) %></span></a>
 						
-					<% end %>
-					<% unless @channels && @authors %>
-						<a class="list-group-item mashfilter" href="/?set=<%= @mashset %>">View All Channels</a>
 					<% end %>
 
 				</div>
@@ -50,21 +47,19 @@
 
 				<% if @authors %>
 				<div class="list-group">
-				  <a href="#" class="list-group-item mashfilter">
+				  
 						<% if @channels && @authors %>
-							<strong>Filter by Author:</strong>
+							<a href="#" class="list-group-item mashfilter"><strong>Filter by Author:</strong></a>
 						<% else %>
-							<strong>Filtering by Author:</strong>
+							<a href="/?set=<%= @mashset %>" class="list-group-item mashfilter"><strong>[Filtering by Author] <span class="text-danger pull-right">remove filter</span></strong></a>
 						<% end %>
-				  </a>
+				  
 					<% @authors.uniq.each do |auth| %>
 					
 						<a class="list-group-item list-group-item-success mashfilter <%= auth == @filter ? "active" : "" %>" href="/filter?filter=<%= auth %>&type=author&set=<%= @mashset %>"><%= auth %> <span class="badge"><%= @authors.count(auth) %></span></a>
 						
 					<% end %>
-					<% unless @channels && @authors %>
-						<a class="list-group-item mashfilter" href="/?set=<%= @mashset %>">View All Authors</a>
-					<% end %>
+
 
 				</div>
 				<% end %>
