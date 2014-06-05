@@ -1,10 +1,10 @@
 <div class="container">
 	<div class="row">
 
-<!-- to change styling of the story panels based on which mashable set -->
+<% #to change styling of the story panels based on which mashable set %>
 <% case @mashset %>
 <% when "new" %>
-<% mashset_panel_context = 'panel-primary' %>
+<% mashset_panel_context = 'panel-info' %>
 <% when "rising" %>
 <% mashset_panel_context = 'panel-warning' %>
 <% when "hot" %>
@@ -13,64 +13,62 @@
 
 		<div class="col-sm-3">
 			<div class="panel <%= mashset_panel_context %>">
+
 			  <div class="panel-heading">
 					<h1> Mashable</h1>
 					
-						<div class="btn-group btn-group-xs">
+					<div class="btn-group btn-group-xs">
 
-						  <button type="button" class="btn <%= @mashset == "new" ? "btn-primary active" : "btn-default" %>" onClick="parent.location='/?set=new'">New</button>
-						  <button type="button" class="btn <%= @mashset == "rising" ? "btn-warning active" : "btn-default" %>" onClick="parent.location='/?set=rising'">Rising</button>
-						  <button type="button" class="btn <%= @mashset == "hot" ? "btn-danger active" : "btn-default" %>" onClick="parent.location='/?set=hot'">Hot</button>
+					  <button type="button" class="btn <%= @mashset == "new" ? "btn-info active" : "btn-default" %>" onClick="parent.location='/?set=new'">New</button>
+					  <button type="button" class="btn <%= @mashset == "rising" ? "btn-warning active" : "btn-default" %>" onClick="parent.location='/?set=rising'">Rising</button>
+					  <button type="button" class="btn <%= @mashset == "hot" ? "btn-danger active" : "btn-default" %>" onClick="parent.location='/?set=hot'">Hot</button>
 
-						
 					</div>
+
 				</div>
 
-				<div class="panel-body">
-					<% if @channels %>
-						<div class="col-sm-12 bottom-buffer">
-							<% if @channels && @authors %>
-								<h6>Filter by Channel:</h6>
-							<% else %>
-								<h6>Filtering by Channel:</h6>
-							<% end %>
-							<div class="btn-group-vertical">
-
-								<% @channels.each do |chan| %>
-								
-										<a class="btn btn-info btn-xs <%= chan == @filter ? "active" : "" %>" role="button" href="/filter?filter=<%= chan.gsub(/\&/, '%26') %>&type=channel&set=<%= @mashset %>"><%= chan %></a>
-									
-								<% end %>
-								<% unless @channels && @authors %>
-									<a class="btn btn-default btn-xs" role="button" href="/?set=<%= @mashset %>">All Channels</a>
-								<% end %>
-							</div>
-						</div>
+				<% if @channels %>
+				<div class="list-group">
+				  <a href="#" class="list-group-item mashfilter">
+						<% if @channels && @authors %>
+							<strong>Filter by Channel:</strong>
+						<% else %>
+							<strong>Filtering by Channel:</strong>
+						<% end %>
+				  </a>
+					<% @channels.uniq.each do |chan| %>
+					
+							<a class="list-group-item list-group-item-info mashfilter <%= chan == @filter ? "active" : "" %>" href="/filter?filter=<%= chan.gsub(/\&/, '%26') %>&type=channel&set=<%= @mashset %>"><%= chan %><span class="badge"><%= @channels.count(chan) %></span></a>
+						
+					<% end %>
+					<% unless @channels && @authors %>
+						<a class="list-group-item mashfilter" href="/?set=<%= @mashset %>">View All Channels</a>
 					<% end %>
 
-					<% if @authors %>
-						<div class="col-sm-12">
-							<% if @channels && @authors %>
-								<h6>Filter by Author:</h6>
-							<% else %>
-								<h6>Filtering by Author:</h6>
-							<% end %>
-							<div class="btn-group-vertical">
+				</div>
+				<% end %>
 
-								<% @authors.each do |auth| %>
-									
-										<a class="btn btn-success btn-xs <%= auth == @filter ? "active" : "" %>" role="button" href="/filter?filter=<%= auth %>&type=author&set=<%= @mashset %>"><%= auth %></a>
-
-								<% end %>
-
-								<% unless @channels && @authors %>
-								<a class="btn btn-default btn-xs" role="button" href="/?set=<%= @mashset %>">All Authors</a>
-								<% end %>
-
-							</div>
-						</div>
+				<% if @authors %>
+				<div class="list-group">
+				  <a href="#" class="list-group-item mashfilter">
+						<% if @channels && @authors %>
+							<strong>Filter by Author:</strong>
+						<% else %>
+							<strong>Filtering by Author:</strong>
+						<% end %>
+				  </a>
+					<% @authors.uniq.each do |auth| %>
+					
+						<a class="list-group-item list-group-item-success mashfilter <%= auth == @filter ? "active" : "" %>" href="/filter?filter=<%= auth %>&type=author&set=<%= @mashset %>"><%= auth %> <span class="badge"><%= @authors.count(auth) %></span></a>
+						
 					<% end %>
-			  </div>
+					<% unless @channels && @authors %>
+						<a class="list-group-item mashfilter" href="/?set=<%= @mashset %>">View All Authors</a>
+					<% end %>
+
+				</div>
+				<% end %>
+
 			</div>
 		</div>
 
@@ -85,7 +83,7 @@
 					<div class="panel <%= mashset_panel_context %>">
 
 					  <div class="panel-heading">
-					  	<h5><span class="label label-info"><%= story['channel'] %></span></h5>
+					  	<h5><span class="label label-primary"><%= story['channel'] %></span></h5>
 					    <h5 class="panel-title"><%= story['title'] %></h5>
 					    <h5><span class="label label-success">by <%= story['author'] %></span></h5>
 					  </div>
