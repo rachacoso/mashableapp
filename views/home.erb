@@ -1,29 +1,77 @@
 <div class="container">
 	<div class="row">
 
+<!-- to change styling of the story panels based on which mashable set -->
+<% case @mashset %>
+<% when "new" %>
+<% mashset_panel_context = 'panel-primary' %>
+<% when "rising" %>
+<% mashset_panel_context = 'panel-warning' %>
+<% when "hot" %>
+<% mashset_panel_context = 'panel-danger' %>
+<% end %>
+
 		<div class="col-sm-3">
-			<h1> Mashable </h1>
+			<div class="panel <%= mashset_panel_context %>">
+			  <div class="panel-heading">
+					<h1> Mashable</h1>
+					
+						<div class="btn-group btn-group-xs">
 
+						  <button type="button" class="btn <%= @mashset == "new" ? "btn-primary active" : "btn-default" %>" onClick="parent.location='/?set=new'">New</button>
+						  <button type="button" class="btn <%= @mashset == "rising" ? "btn-warning active" : "btn-default" %>" onClick="parent.location='/?set=rising'">Rising</button>
+						  <button type="button" class="btn <%= @mashset == "hot" ? "btn-danger active" : "btn-default" %>" onClick="parent.location='/?set=hot'">Hot</button>
 
-			<div class="col-sm-12">
-				<div class="btn-group-vertical">
-					<a class="btn btn-primary btn-xs" role="button" href="/">All</a>
-					<% @channels.uniq.each do |chan| %>
-					<a class="btn btn-primary btn-xs" role="button" href="/filter?filter=<%= chan.gsub(/\&/, '%26') %>&type=channel"><%= chan %></a>
-					<% end %>
+						
+					</div>
 				</div>
-			</div>
-			
 
-			<div class="col-sm-12 top-buffer">
-				<div class="btn-group-vertical">
-					<a class="btn btn-primary btn-xs" role="button" href="/">All</a>
-					<% @authors.uniq.each do |auth| %>
-					<a class="btn btn-primary btn-xs" role="button" href="/filter?filter=<%= auth %>&type=author"><%= auth %></a>
+				<div class="panel-body">
+					<% if @channels %>
+						<div class="col-sm-12 bottom-buffer">
+							<% if @channels && @authors %>
+								<h6>Filter by Channel:</h6>
+							<% else %>
+								<h6>Filtering by Channel:</h6>
+							<% end %>
+							<div class="btn-group-vertical">
+
+								<% @channels.each do |chan| %>
+								
+										<a class="btn btn-info btn-xs <%= chan == @filter ? "active" : "" %>" role="button" href="/filter?filter=<%= chan.gsub(/\&/, '%26') %>&type=channel&set=<%= @mashset %>"><%= chan %></a>
+									
+								<% end %>
+								<% unless @channels && @authors %>
+									<a class="btn btn-default btn-xs" role="button" href="/?set=<%= @mashset %>">All Channels</a>
+								<% end %>
+							</div>
+						</div>
 					<% end %>
-				</div>
-			</div>
 
+					<% if @authors %>
+						<div class="col-sm-12">
+							<% if @channels && @authors %>
+								<h6>Filter by Author:</h6>
+							<% else %>
+								<h6>Filtering by Author:</h6>
+							<% end %>
+							<div class="btn-group-vertical">
+
+								<% @authors.each do |auth| %>
+									
+										<a class="btn btn-success btn-xs <%= auth == @filter ? "active" : "" %>" role="button" href="/filter?filter=<%= auth %>&type=author&set=<%= @mashset %>"><%= auth %></a>
+
+								<% end %>
+
+								<% unless @channels && @authors %>
+								<a class="btn btn-default btn-xs" role="button" href="/?set=<%= @mashset %>">All Authors</a>
+								<% end %>
+
+							</div>
+						</div>
+					<% end %>
+			  </div>
+			</div>
 		</div>
 
 		<div class="col-sm-9">
@@ -34,13 +82,49 @@
 				<div class="row equal">
 			<% end %>
 				<div class="col-sm-6">
-					<div class="panel panel-default">
+					<div class="panel <%= mashset_panel_context %>">
 
+					  <div class="panel-heading">
+					  	<h5><span class="label label-info"><%= story['channel'] %></span></h5>
+					    <h5 class="panel-title"><%= story['title'] %></h5>
+					    <h5><span class="label label-success">by <%= story['author'] %></span></h5>
+					  </div>
 					  <div class="panel-body">
-							<h5><%= story['title'] %> <br> <small>by <%= story['author'] %></small></h5>
-							<a href="<%=story['link']%>" ><img src='<%= story['image'] %>' class="img-responsive"></a>
+					  	
+							<a href="<%=story['link']%>" target="_blank"><img src='<%= story['image'] %>' class="img-responsive top-buffer"></a>
 							<h6><%=story['excerpt']%> </h6>
-							<h6><span class="label label-primary"><%=story['channel']%></span></h6>
+							<% if story['shares']['twitter'] %> 
+
+									<button class="btn btn-warning btn-xs" data-toggle="modal" data-remote="/tweets?filter=<%= story['_id']%>&type=_id&set=<%= @mashset %>" data-target=".bs-<%= story['_id']%>-modal-sm"><%= story['shares']['twitter'] %> Tweets - View 5 most recent</button>
+
+									<div class="modal fade bs-<%= story['_id']%>-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+									  <div class="modal-dialog modal-lg">
+									    <div class="modal-content">
+
+												<div class="panel <%= mashset_panel_context %>">
+												  <div class="panel-heading">
+												  	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+												    <h3 class="panel-title"><%= story['title'] %></h3>
+												  </div>
+												  <div class="panel-body">
+												  	
+											    	<div class="row text-center">
+												      <div class="col-sm-12 top-buffer bottom-buffer">
+												      	<h4> Loading 5 most recent tweets...</h4>
+													      <img src="img/ajax-loader.gif">
+															</div>
+														</div>
+														
+												  </div>
+												</div>
+
+
+									    </div>
+									  </div>
+									</div>
+
+							<% end %>
+							
 					  </div>
 					</div>
 				</div>

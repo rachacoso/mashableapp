@@ -1,0 +1,28 @@
+
+<% case @mashset %>
+<% when "new" %>
+<% mashset_panel_context = 'panel-primary' %>
+<% when "rising" %>
+<% mashset_panel_context = 'panel-warning' %>
+<% when "hot" %>
+<% mashset_panel_context = 'panel-danger' %>
+<% end %>
+
+<% @stories.each do |story| %>
+	<div class="panel <%= mashset_panel_context %>">
+	  <div class="panel-heading">
+	  	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	    <h3 class="panel-title"><%= story['title'] %></h3>
+	  </div>
+	  <div class="panel-body">
+	  	
+				<h4> 5 most recent tweets </h4>
+				<%  @client.search(story['title'], :result_type => "recent").take(5).each do |tweet| %>
+					<h5><%= tweet.text %><br>
+					<small><a href="http://twitter.com/<%= tweet.user.screen_name %>">@<%= tweet.user.screen_name %></a></small></h5>
+				<% end %>
+			
+	  </div>
+	</div>
+
+<% end %>
