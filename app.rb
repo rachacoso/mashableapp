@@ -33,7 +33,7 @@ class Filters
 		set.each do |story|
 			list << story[type]
 		end
-		return list.uniq.sort
+		return list.sort
 	end
 end
 
@@ -106,5 +106,6 @@ get '/tweets' do
 	erb :tweets
 
 end
+
 
 
