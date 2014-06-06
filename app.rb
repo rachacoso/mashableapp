@@ -18,19 +18,14 @@ def twitter_get
 end
 
 # use to set counts to send to API & only return relevant sets
-def set_counts(set,count)
-		newcount = "0"
-		risingcount = "0"
-		hotcount = "0"
-	case set
-	when "new"
-		newcount = count
-	when "rising"
-		risingcount = count
-	when "hot"
-		hotcount = count
-	end
+def set_counts(set,count)	
+
+	newcount = (set=='new')? count : "0"
+	risingcount = (set=='rising')? count : "0"
+	hotcount = (set=='hot')? count : "0"
+
 	return newcount, risingcount, hotcount
+
 end
 
 class Storyset
@@ -88,7 +83,7 @@ get '/filter' do
 
 		newcount, risingcount, hotcount = set_counts(params[:set],@articlecount)
 
-		all_stories = Storyset.new.get_set("#{MASHABLE_JSON}?new_per_page=#{newcount}&rising_per_page=#{risingcount}&?hot_per_page=#{hotcount}", params[:set])
+		all_stories = Storyset.new.get_set("#{MASHABLE_JSON}?new_per_page=#{newcount}&rising_per_page=#{risingcount}&hot_per_page=#{hotcount}", params[:set])
 
 		# all_stories = Storyset.new.get_set("#{MASHABLE_JSON}?new_per_page=#{@articlecount}&rising_per_page=#{@articlecount}&?hot_per_page=#{@articlecount}", params[:set])
 
@@ -121,7 +116,7 @@ get '/tweets' do
 
 		@articlecount = (params[:articlecount].nil? || params[:articlecount].empty?)? '10' : params[:articlecount]
 
-		all_stories = Storyset.new.get_set("#{MASHABLE_JSON}?new_per_page=#{@articlecount}&rising_per_page=#{@articlecount}&?hot_per_page=#{@articlecount}", params[:set])
+		all_stories = Storyset.new.get_set("#{MASHABLE_JSON}?new_per_page=#{@articlecount}&rising_per_page=#{@articlecount}&hot_per_page=#{@articlecount}", params[:set])
 
 		#create timestamp
 		time = Time.new

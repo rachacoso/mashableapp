@@ -41,10 +41,10 @@
 						<% if @channels && @authors %>
 							<a href="#" class="list-group-item mashfilter"><strong>Filter by Channel:</strong></a>
 						<% else %>
-							<a href="/?set=<%= @mashset %>" class="list-group-item mashfilter"><strong>[Filtering by Channel] <span class="text-danger pull-right">remove filter</span></strong></a>
+							<a href="/?set=<%= @mashset %>&articlecount=<%= @articlecount %>" class="list-group-item mashfilter"><strong>[Filtering by Channel] <span class="text-danger pull-right">remove filter</span></strong></a>
 						<% end %>
 				  
-					<% @channels.each do |chan,count| %>
+					<% @channels.sort.map do |chan,count| %>
 					
 							<a class="list-group-item list-group-item-info mashfilter <%= chan == @filter ? "active" : "" %>" href="/filter?filter=<%= chan.gsub(/\&/, '%26') %>&type=channel&set=<%= @mashset %>&articlecount=<%= @articlecount %>"><%= chan %><span class="badge"><%= count %></span></a>
 						
@@ -59,10 +59,10 @@
 						<% if @channels && @authors %>
 							<a href="#" class="list-group-item mashfilter"><strong>Filter by Author:</strong></a>
 						<% else %>
-							<a href="/?set=<%= @mashset %>" class="list-group-item mashfilter"><strong>[Filtering by Author] <span class="text-danger pull-right">remove filter</span></strong></a>
+							<a href="/?set=<%= @mashset %>&articlecount=<%= @articlecount %>" class="list-group-item mashfilter"><strong>[Filtering by Author] <span class="text-danger pull-right">remove filter</span></strong></a>
 						<% end %>
 				  
-					<% @authors.each do |auth,count| %>
+					<% @authors.sort.map do |auth,count| %>
 					
 						<a class="list-group-item list-group-item-success mashfilter <%= auth == @filter ? "active" : "" %>" href="/filter?filter=<%= auth %>&type=author&set=<%= @mashset %>&articlecount=<%= @articlecount %>"><%= auth %> <span class="badge"><%= count %></span></a>
 						
