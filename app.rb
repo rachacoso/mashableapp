@@ -5,6 +5,8 @@ set :server, 'webrick'
 require 'rest_client'
 require 'twitter'
 
+MASHABLE_JSON = 'http://mashable.com/stories.json'
+
 def twitter_get 
 
 	client = Twitter::REST::Client.new do |config|
@@ -13,6 +15,21 @@ def twitter_get
 	end
 	return client
 
+end
+
+def set_counts(set,count)
+		newcount = "0"
+		risingcount = "0"
+		hotcount = "0"
+	case set
+	when "new"
+		newcount = count
+	when "rising"
+		risingcount = count
+	when "hot"
+		hotcount = count
+	end
+	return newcount, risingcount, hotcount
 end
 
 class Storyset
@@ -29,26 +46,24 @@ end
 class Filters
 	def get_list(type, set)
 
-		list=[]
+		hash=Hash.new(0)
+
 		set.each do |story|
-			list << story[type]
+			hash[story[type]] += 1
 		end
-		puts list
-		return list.sort
+
+		return hash
 	end
 end
 
 get '/' do 
-
-  # if params[:set]
-		# @mashset = params[:set]
-  # else
-  # 	@mashset = 'new'
-  # end
-
-	@mashset = params[:set] || 'new'
 	
-	all_stories = Storyset.new.get_set('http://mashable.com/stories.json?new_per_page=30&rising_per_page=30&?hot_per_page=30', @mashset)
+	# set defaults if nil or not defined
+	@mashset = (params[:set].nil? || params[:set].empty?)? 'new' : params[:set]
+	@articlecount = (params[:articlecount].nil? || params[:articlecount].empty?)? '10' : params[:articlecount]
+	newcount, risingcount, hotcount = set_counts(@mashset,@articlecount)
+
+	all_stories = Storyset.new.get_set("#{MASHABLE_JSON}?new_per_page=#{newcount}&rising_per_page=#{risingcount}&?hot_per_page=#{hotcount}", @mashset)
 
 	#for filter menu
 	@channels = Filters.new.get_list('channel', all_stories)
@@ -67,7 +82,14 @@ get '/filter' do
 
 	if params[:filter] && params[:type] && params[:set]
 
-		all_stories = Storyset.new.get_set('http://mashable.com/stories.json?new_per_page=30&rising_per_page=30&?hot_per_page=30', params[:set])
+		# set defaults if nil or not defined
+		@articlecount = (params[:articlecount].nil? || params[:articlecount].empty?)? '10' : params[:articlecount]
+
+		newcount, risingcount, hotcount = set_counts(params[:set],@articlecount)
+
+		all_stories = Storyset.new.get_set("#{MASHABLE_JSON}?new_per_page=#{newcount}&rising_per_page=#{risingcount}&?hot_per_page=#{hotcount}", params[:set])
+
+		# all_stories = Storyset.new.get_set("#{MASHABLE_JSON}?new_per_page=#{@articlecount}&rising_per_page=#{@articlecount}&?hot_per_page=#{@articlecount}", params[:set])
 
 		#for filter menu
 		if params[:type] == 'channel'
@@ -77,7 +99,7 @@ get '/filter' do
 			@authors = Filters.new.get_list('author', all_stories)
 		end
 
-		@stories = all_stories.select { |v| v[params[:type]] == params[:filter] }
+		@stories = all_stories.select { |v| v[params[:type]] == params[:filter] } # get stories by channel or author
 
 		# pass back so can set active buttons in UI
 		@filter = params[:filter]
@@ -95,7 +117,10 @@ end
 get '/tweets' do
 
 	if params[:filter] && params[:type] && params[:set]
-		all_stories = Storyset.new.get_set('http://mashable.com/stories.json?new_per_page=30&rising_per_page=30&?hot_per_page=30', params[:set])
+
+		@articlecount = (params[:articlecount].nil? || params[:articlecount].empty?)? '10' : params[:articlecount]
+
+		all_stories = Storyset.new.get_set("#{MASHABLE_JSON}?new_per_page=#{@articlecount}&rising_per_page=#{@articlecount}&?hot_per_page=#{@articlecount}", params[:set])
 
 		#create timestamp
 		time = Time.new
@@ -106,7 +131,7 @@ get '/tweets' do
 
 		@client = twitter_get
 
-		@stories = all_stories.select { |v| v[params[:type]] == params[:filter] }
+		@stories = all_stories.select { |v| v[params[:type]] == params[:filter] }  # get story by ID
 		@mashset = params[:set]
 
 
