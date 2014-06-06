@@ -17,6 +17,7 @@ def twitter_get
 
 end
 
+# use to set counts to send to API & only return relevant sets
 def set_counts(set,count)
 		newcount = "0"
 		risingcount = "0"
@@ -61,9 +62,9 @@ get '/' do
 	# set defaults if nil or not defined
 	@mashset = (params[:set].nil? || params[:set].empty?)? 'new' : params[:set]
 	@articlecount = (params[:articlecount].nil? || params[:articlecount].empty?)? '10' : params[:articlecount]
-	newcount, risingcount, hotcount = set_counts(@mashset,@articlecount)
-
-	all_stories = Storyset.new.get_set("#{MASHABLE_JSON}?new_per_page=#{newcount}&rising_per_page=#{risingcount}&?hot_per_page=#{hotcount}", @mashset)
+	
+	newcount, risingcount, hotcount = set_counts(@mashset,@articlecount) # only return pertinent set (e.g.)
+	all_stories = Storyset.new.get_set("#{MASHABLE_JSON}?new_per_page=#{newcount}&rising_per_page=#{risingcount}&hot_per_page=#{hotcount}", @mashset)
 
 	#for filter menu
 	@channels = Filters.new.get_list('channel', all_stories)
