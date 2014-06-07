@@ -86,9 +86,9 @@
 					<div class="panel panel-<%= mashset_context %>">
 
 					  <div class="panel-heading">
-					  	<h5><span class="label label-primary"><%= story['channel'] %></span></h5>
+					  	<h5><span class="label label-primary"><a href="/filter?filter=<%= story['channel'].gsub(/\&/, '%26') %>&type=channel&set=<%= @mashset %>&articlecount=<%= @articlecount %>" style="color:white"><%= story['channel'] %></a></span></h5>
 					    <h5 class="panel-title"><a href="<%=story['link']%>" target="_blank"><%= story['title'] %></a></h5>
-					    <h5><span class="label label-success">by <%= story['author'] %></span></h5>
+					    <h5><span class="label label-success"><a href="/filter?filter=<%= story['author'] %>&type=author&set=<%= @mashset %>&articlecount=<%= @articlecount %>" style="color:white">by <%= story['author'] %></a></span></h5>
 					  </div>
 					  <div class="panel-body">
 					  	
